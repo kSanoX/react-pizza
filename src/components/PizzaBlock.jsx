@@ -5,17 +5,9 @@ export default function PizzaBlock({title, price, imageUrl, sizes, types}) {
     const [activeSize, setActiveSize] = useState(0);
     const [activeType, setActiveType] = useState(0);
     const typeNames = ['Тонкая', 'Традиционная']
-    console.log(sizes);
 
    const changeCountPizza = () => {
         setCountPizza(countPizza + 1);
-    }
-
-    const handleActiveSize = (index) => {
-        setActiveSize(index);
-    }
-    const handleActiveType = (index) => {
-        setActiveType(index);
     }
 
     return (
@@ -30,7 +22,7 @@ export default function PizzaBlock({title, price, imageUrl, sizes, types}) {
                 <ul>
                     {
                         types.map((value, index) => (
-                            <li key={index} onClick={() => handleActiveType(index)} className={activeType === index ? 'active' : ''}>
+                            <li key={index} onClick={() => setActiveType(index)} className={activeType === index ? 'active' : ''}>
                                 {typeNames[value]}
                             </li>
                         ))
@@ -39,7 +31,7 @@ export default function PizzaBlock({title, price, imageUrl, sizes, types}) {
                 <ul>
                     {
                         sizes.map((value, index) => (
-                            <li key={index} onClick={() => handleActiveSize(index)} className={activeSize === index ? 'active' : ''}>
+                            <li key={index} onClick={() => setActiveSize(index)} className={activeSize === index ? 'active' : ''}>
                                 {value} см.
                             </li>
                         ))
