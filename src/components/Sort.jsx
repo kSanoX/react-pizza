@@ -1,7 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 
 export default function Sort() {
+
+    const [sortSwith, setSortSwith] = useState(false);
+    const [pickout, setPickout] = useState(0);
+    const sortList = ['популярности', 'цене', 'алфавиту'];
+
+    const onClickPickout = (i) => {
+        setPickout(i);
+        setSortSwith(false);
+    }
+    
     return (
         <div className='sort'>
             <div className='sort__label'>
@@ -18,15 +28,20 @@ export default function Sort() {
                     />
                 </svg>
                 <b>Сортировка по:</b>
-                <span>популярности</span>
+                <span onClick={()=> setSortSwith(!sortSwith)}>{sortList[pickout]}</span>
             </div>
-            <div className='sort__popup'>
+            { sortSwith && (
+                <div className='sort__popup'>
                 <ul>
-                    <li className='active'>популярности</li>
-                    <li>цене</li>
-                    <li>алфавиту</li>
+                    {
+                        sortList.map((value, i) => {
+                            return (
+                            <li key={i} onClick={()=> onClickPickout(i)} className={pickout === i ? 'active' : ''}>{value}</li>
+                        )})
+                    }
                 </ul>
             </div>
+            )}
         </div>
     )
 }
