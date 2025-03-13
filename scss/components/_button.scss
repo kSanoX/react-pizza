@@ -56,6 +56,9 @@
   &--outline {
     background-color: #fff;
     border-color: $orange;
+    display: flex;
+    align-items: center;
+    gap: 4px;
     &,
     span {
       color: $orange;
