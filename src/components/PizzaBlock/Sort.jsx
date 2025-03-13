@@ -1,16 +1,13 @@
 import React, { useState } from 'react'
 
 
-export default function Sort() {
+export default function Sort({pickout, onClickPickout}) {
 
-    const [sortSwith, setSortSwith] = useState(false);
-    const [pickout, setPickout] = useState(0);
-    const sortList = ['популярности', 'цене', 'алфавиту'];
-
-    const onClickPickout = (i) => {
-        setPickout(i);
-        setSortSwith(false);
-    }
+    const [sortSwitch, setSortSwith] = useState(false);
+    const sortList = [
+        {name: 'популярности', sortProperty: 'rating'},
+        {name: 'цене', sortProperty: 'price'},
+        {name: 'алфавиту', sortProperty: 'title'}];
     
     return (
         <div className='sort'>
@@ -28,15 +25,15 @@ export default function Sort() {
                     />
                 </svg>
                 <b>Сортировка по:</b>
-                <span onClick={()=> setSortSwith(!sortSwith)}>{sortList[pickout]}</span>
+                <span onClick={()=> setSortSwith(!sortSwitch)}>{pickout.name}</span>
             </div>
-            { sortSwith && (
+            { sortSwitch && (
                 <div className='sort__popup'>
                 <ul>
                     {
-                        sortList.map((value, i) => {
+                        sortList.map((obj, i) => {
                             return (
-                            <li key={i} onClick={()=> onClickPickout(i)} className={pickout === i ? 'active' : ''}>{value}</li>
+                            <li key={i} onClick={()=> onClickPickout(obj)} className={pickout.sortProperty === obj.sortProperty ? 'active' : ''}>{obj.name}</li>
                         )})
                     }
                 </ul>
