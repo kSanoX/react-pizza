@@ -13,7 +13,7 @@ export default function Categories() {
       <ul>
         {
           categories.map((value, index) => (
-            <li onClick={() => handleActive(index)} className={changeActive === index ? 'active' : ''}>
+            <li key={index} onClick={() => handleActive(index)} className={changeActive === index ? 'active' : ''}>
               {value}
             </li>
           ))

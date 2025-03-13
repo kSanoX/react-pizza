@@ -18,11 +18,12 @@ export default function Home() {
         setItems(data);
         setIsLoading(false);
       })
-      .catch((err) => console.log(err))
+      .catch((err) => console.log(err));
+      window.scrollTo(0,0);
     }, []);
 
   return (
-    <>
+    <div className="container">
     <div className="content__top">
             <Categories />
             <Sort />
@@ -39,6 +40,6 @@ export default function Home() {
               ))
              }
           </div>
-    </>
+      </div>
   )
 }
