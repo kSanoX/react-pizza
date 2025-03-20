@@ -18,6 +18,7 @@ export default function Home() {
   const [searchValue] = useContext(searchContext);
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
 
   const orderUrl = pickout.sortProperty.includes('-') ? 'asc' : 'desc';
   const categoryUrl = categoryId > 0 ? `category=${categoryId}` : '';
@@ -26,37 +27,59 @@ export default function Home() {
 
   const onClickCategory = (id) => {
     dispatch(setCategoryId(id));
-  }
+  };
 
   useEffect(() => {
     setIsLoading(true);
-    const url = `https://67c9a2d4102d684575c2e4ae.mockapi.io/items?${categoryUrl}&sortBy=${filter}&order=${orderUrl}${filterValueUrl}`;
+    setIsError(false);
 
-    axios.get(url).then((res) => {
-      setItems(res.data);
-      setIsLoading(false);
-    });
-  
-    window.scrollTo(0, 0);
+    const debounceTimer = setTimeout(() => {
+      const url = `https://67c9a2d4102d684575c2e4ae.mockapi.io/items?${categoryUrl}&sortBy=${filter}&order=${orderUrl}${filterValueUrl}`;
+
+      axios.get(url)
+        .then((res) => {
+          if (res.data.length === 0) {
+            setIsError(true);
+          } else {
+            setItems(res.data);
+            setIsError(false);
+          }
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          console.error('Ошибка запроса:', err);
+          setItems([]);
+          setIsError(true);
+          setIsLoading(false);
+        });
+
+      window.scrollTo(0, 0);
+    }, 500);
+
+    return () => clearTimeout(debounceTimer);
   }, [pickout, searchValue, categoryId]);
-  
 
   return (
     <div className="container">
-    <div className="content__top">
-            <Categories categoryId={categoryId} onClickCategory={onClickCategory}/>
-            <Sort/>
-          </div>
-          <h2 className="content__title">Все пиццы</h2>
+      <div className="content__top">
+        <Categories categoryId={categoryId} onClickCategory={onClickCategory} />
+        <Sort />
+      </div>
+      <h2 className="content__title">Все пиццы</h2>
+
       <div className="content__items">
-        {isLoading ? (
+        {isLoading && (
           [...new Array(6)].map((_, i) => <Skeleton key={i} />)
-        ) : items.length > 0 ? (
-          items.map((obj) => <PizzaBlock key={obj.id} {...obj} />)
-        ) : (
+        )}
+
+        {!isLoading && isError && (
           <h2 style={{ margin: '0 auto', color: '#777' }}>Пиццы не найдены 😕</h2>
+        )}
+
+        {!isLoading && !isError && items.length > 0 && (
+          items.map((obj) => <PizzaBlock key={obj.id} {...obj} />)
         )}
       </div>
     </div>
-  )
+  );
 }
