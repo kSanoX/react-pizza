@@ -4,12 +4,18 @@ import Header from "./components/PizzaBlock/Header"
 import Home from "./components/pages/Home";
 import NotFound from "./components/pages/NotFound";
 import Cart from "./components/pages/Cart";
+import { createContext, useState } from 'react';
 
+export const searchContext = createContext();
 
 function App() {
+
+  const [searchValue, setSearchValue] = useState('');
+  
   return (
+    <searchContext.Provider value={[searchValue, setSearchValue]}>
     <div className="wrapper">
-      <Header />
+      <Header/>
       <div className="content">
           <Routes>
             <Route path="/" element={<Home></Home>}/>
@@ -18,6 +24,7 @@ function App() {
           </Routes>
         </div>
       </div>
+      </searchContext.Provider>
   );
 }
 

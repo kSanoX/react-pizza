@@ -1,6 +1,7 @@
 import React from 'react'
 import logo from "../../assets/img/pizza-logo.svg"
 import { Link } from 'react-router-dom'
+import Search from '../Search'
 
 export default function Header() {
   return (
@@ -50,6 +51,7 @@ export default function Header() {
                 </svg>
                 <span>3</span>
               </Link>
+              <Search></Search>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import React from 'react'
-export default function Categories({changeActive, onClickCategory}) {
+export default function Categories({categoryId, onClickCategory}) {
 
   const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
   return (
@@ -7,7 +7,7 @@ export default function Categories({changeActive, onClickCategory}) {
       <ul>
         {
           categories.map((categoryName, index) => (
-            <li key={index} onClick={() => onClickCategory(index)} className={changeActive === index ? 'active' : ''}>
+            <li key={index} onClick={() => onClickCategory(index)} className={categoryId === index ? 'active' : ''}>
               {categoryName}
             </li>
           ))

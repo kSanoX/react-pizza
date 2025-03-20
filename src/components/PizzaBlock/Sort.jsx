@@ -1,13 +1,26 @@
 import React, { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { setPickout } from '../../redux/slices/filterSlice';
 
 
-export default function Sort({pickout, onClickPickout}) {
+export default function Sort() {
+
+    const dispatch = useDispatch();
+    const pickout = useSelector(state => state.filterSlice.sortType);
 
     const [sortSwitch, setSortSwith] = useState(false);
     const sortList = [
-        {name: 'популярности', sortProperty: 'rating'},
-        {name: 'цене', sortProperty: 'price'},
-        {name: 'алфавиту', sortProperty: 'title'}];
+        {name: 'популярности (DESC)', sortProperty: 'rating'},
+        {name: 'популярности (ASC)', sortProperty: '-rating'},
+        {name: 'цене (DESC)', sortProperty: 'price'},
+        {name: 'цене (ASC)', sortProperty: '-price'},
+        {name: 'алфавиту (DESC)', sortProperty: 'title'},
+        {name: 'алфавиту (ASC)', sortProperty: '-title'}];
+
+        const onClickPickout = (obj) => {
+            console.log(obj);
+            dispatch(setPickout(obj));
+        }
     
     return (
         <div className='sort'>
