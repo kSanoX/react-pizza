@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
 
 import Categories from "../PizzaBlock/Categories"
 import Sort from "../PizzaBlock/Sort";
@@ -11,8 +12,7 @@ import { setCategoryId } from '../../redux/slices/filterSlice';
 
 export default function Home() {
 
-  const categoryId = useSelector(state => state.filterSlice.categoryId);
-  const pickout = useSelector(state => state.filterSlice.sortType);
+  const { categoryId, sortType: pickout } = useSelector(state => state.filterSlice);
   const dispatch = useDispatch();
 
   const [searchValue] = useContext(searchContext);
@@ -30,29 +30,12 @@ export default function Home() {
 
   useEffect(() => {
     setIsLoading(true);
-  
     const url = `https://67c9a2d4102d684575c2e4ae.mockapi.io/items?${categoryUrl}&sortBy=${filter}&order=${orderUrl}${filterValueUrl}`;
-  
-    fetch(url)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Ошибка запроса: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setItems(data);
-        } else {
-          setItems([]);
-        }
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-        setItems([]);
-        setIsLoading(false);
-      });
+
+    axios.get(url).then((res) => {
+      setItems(res.data);
+      setIsLoading(false);
+    });
   
     window.scrollTo(0, 0);
   }, [pickout, searchValue, categoryId]);
