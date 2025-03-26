@@ -33,7 +33,6 @@ export default function Home() {
     setIsLoading(true);
     setIsError(false);
 
-    const debounceTimer = setTimeout(() => {
       const url = `https://67c9a2d4102d684575c2e4ae.mockapi.io/items?${categoryUrl}&sortBy=${filter}&order=${orderUrl}${filterValueUrl}`;
 
       axios.get(url)
@@ -54,9 +53,7 @@ export default function Home() {
         });
 
       window.scrollTo(0, 0);
-    }, 500);
 
-    return () => clearTimeout(debounceTimer);
   }, [pickout, searchValue, categoryId]);
 
   return (

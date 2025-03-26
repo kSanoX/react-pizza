@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { setPickout } from '../../redux/slices/filterSlice';
 
@@ -7,24 +7,36 @@ export default function Sort() {
 
     const dispatch = useDispatch();
     const pickout = useSelector(state => state.filterSlice.sortType);
+    const sortElement = useRef();
 
     const [sortSwitch, setSortSwith] = useState(false);
     const sortList = [
-        {name: 'популярности (DESC)', sortProperty: 'rating'},
-        {name: 'популярности (ASC)', sortProperty: '-rating'},
-        {name: 'цене (DESC)', sortProperty: 'price'},
-        {name: 'цене (ASC)', sortProperty: '-price'},
-        {name: 'алфавиту (DESC)', sortProperty: 'title'},
-        {name: 'алфавиту (ASC)', sortProperty: '-title'}];
+        { name: 'популярности (DESC)', sortProperty: 'rating' },
+        { name: 'популярности (ASC)', sortProperty: '-rating' },
+        { name: 'цене (DESC)', sortProperty: 'price' },
+        { name: 'цене (ASC)', sortProperty: '-price' },
+        { name: 'алфавиту (DESC)', sortProperty: 'title' },
+        { name: 'алфавиту (ASC)', sortProperty: '-title' }];
 
-        const onClickPickout = (obj) => {
-            console.log(obj);
-            dispatch(setPickout(obj));
+    const onClickPickout = (obj) => {
+        dispatch(setPickout(obj));
+    }
+
+    useEffect(() => {
+        const handleOutsideClick = (e) => {
+            if (!e.composedPath().includes(sortElement.current)) {
+                setSortSwith(false);
+            }
+        };
+        document.body.addEventListener('click', handleOutsideClick);
+        return () => {
+            document.body.removeEventListener('click', handleOutsideClick);
         }
-    
+    }, []);
+
     return (
         <div className='sort'>
-            <div className='sort__label'>
+            <div className='sort__label' ref={sortElement}>
                 <svg
                     width='10'
                     height='6'
@@ -38,19 +50,20 @@ export default function Sort() {
                     />
                 </svg>
                 <b>Сортировка по:</b>
-                <span onClick={()=> setSortSwith(!sortSwitch)}>{pickout.name}</span>
+                <span onClick={() => setSortSwith(!sortSwitch)}>{pickout.name}</span>
             </div>
-            { sortSwitch && (
+            {sortSwitch && (
                 <div className='sort__popup'>
-                <ul>
-                    {
-                        sortList.map((obj, i) => {
-                            return (
-                            <li key={i} onClick={()=> onClickPickout(obj)} className={pickout.sortProperty === obj.sortProperty ? 'active' : ''}>{obj.name}</li>
-                        )})
-                    }
-                </ul>
-            </div>
+                    <ul>
+                        {
+                            sortList.map((obj, i) => {
+                                return (
+                                    <li key={i} onClick={() => onClickPickout(obj)} className={pickout.sortProperty === obj.sortProperty ? 'active' : ''}>{obj.name}</li>
+                                )
+                            })
+                        }
+                    </ul>
+                </div>
             )}
         </div>
     )
