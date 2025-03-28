@@ -9,52 +9,58 @@ import PizzaBlock from "../PizzaBlock";
 import Skeleton from "../PizzaBlock/Skeleton";
 import { searchContext } from '../../App';
 import { setCategoryId } from '../../redux/slices/filterSlice';
+import { setItems } from '../../redux/slices/pizzaSlice';
 
 export default function Home() {
 
   const { categoryId, sortType: pickout } = useSelector(state => state.filterSlice);
+  const items = useSelector((state) => state.pizzaSlice.items);
   const dispatch = useDispatch();
 
   const [searchValue] = useContext(searchContext);
-  const [items, setItems] = useState([]);
+  // const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
-
-  const orderUrl = pickout.sortProperty.includes('-') ? 'asc' : 'desc';
-  const categoryUrl = categoryId > 0 ? `category=${categoryId}` : '';
-  const filter = pickout.sortProperty.replace('-', '');
-  const filterValueUrl = searchValue ? `&search=${searchValue}` : '';
 
   const onClickCategory = (id) => {
     dispatch(setCategoryId(id));
   };
 
   useEffect(() => {
+    const orderUrl = pickout.sortProperty.includes('-') ? 'asc' : 'desc';
+    const categoryUrl = categoryId > 0 ? `category=${categoryId}` : '';
+    const filter = pickout.sortProperty.replace('-', '');
+    const filterValueUrl = searchValue ? `&search=${searchValue}` : '';
+  
     setIsLoading(true);
     setIsError(false);
-
-      const url = `https://67c9a2d4102d684575c2e4ae.mockapi.io/items?${categoryUrl}&sortBy=${filter}&order=${orderUrl}${filterValueUrl}`;
-
-      axios.get(url)
-        .then((res) => {
-          if (res.data.length === 0) {
-            setIsError(true);
-          } else {
-            setItems(res.data);
-            setIsError(false);
-          }
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          console.error('Ошибка запроса:', err);
-          setItems([]);
+  
+    const fetchData = async () => {
+      try {
+        const url = `https://67c9a2d4102d684575c2e4ae.mockapi.io/items?${categoryUrl}&sortBy=${filter}&order=${orderUrl}${filterValueUrl}`;
+        const res = await axios.get(url);
+  
+        if (res.data.length === 0) {
           setIsError(true);
-          setIsLoading(false);
-        });
-
-      window.scrollTo(0, 0);
-
+        } else {
+          dispatch(setItems(res.data));
+          setIsError(false);
+        }
+      } catch (err) {
+        console.error('Ошибка запроса:', err);
+        dispatch(setItems([]));
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    fetchData();
+    window.scrollTo(0, 0);
   }, [pickout, searchValue, categoryId]);
+  
+
+
 
   return (
     <div className="container">
